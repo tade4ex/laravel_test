@@ -1,0 +1,37 @@
+services:
+  laravel_test_nginx:
+    container_name: laravel_test_nginx
+    build: docker/nginx
+    volumes:
+      - ./src:/srv/www
+    ports:
+      - '8888:80'
+    networks:
+      - internal
+  laravel_test_php:
+    container_name: laravel_test_php
+    build: docker/php
+    volumes:
+      - ./src:/srv/www
+    environment:
+      REDIS_PORT: 6379
+    networks:
+      - internal
+  laravel_test_redis:
+    container_name: laravel_test_redis
+    image: "redis:latest"
+    networks:
+      - internal
+  laravel_test_mysql:
+    container_name: laravel_test_mysql
+    build: docker/mysql
+    ports:
+      - "3306:3306"
+    env_file:
+      - ./docker/mysql/templates/database.env
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
