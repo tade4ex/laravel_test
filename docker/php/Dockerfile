@@ -13,17 +13,22 @@ RUN apt-get update && apt-get install -y libzip-dev unzip python3 libpng-dev mar
 RUN docker-php-ext-install pdo_mysql bcmath zip gd opcache
 
 # Custom configurations
-COPY ./templates/php.conf /usr/local/etc/php-fpm.d/zzz-custom.conf
-COPY ./templates/memory-limit.ini /usr/local/etc/php/conf.d/memory-limit.ini
+COPY ./docker/php/templates/php.conf /usr/local/etc/php-fpm.d/zzz-custom.conf
+COPY ./docker/php/templates/memory-limit.ini /usr/local/etc/php/conf.d/memory-limit.ini
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --filename=composer --install-dir=/usr/local/bin
 
 # Supervisor
-COPY ./templates/supervisord.conf /etc/supervisor/supervisord.conf
+COPY ./docker/php/templates/supervisord.conf /etc/supervisor/supervisord.conf
 RUN mkdir -p "/etc/supervisor/logs"
 
 # Change workdir
 WORKDIR /srv/www
+
+COPY src .
+RUN composer install && \
+    npm install && \
+    npm run build
 
 CMD ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisor/supervisord.conf"]

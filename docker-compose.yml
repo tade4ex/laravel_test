@@ -1,20 +1,24 @@
 services:
+  laravel_test_php:
+    container_name: laravel_test_php
+    build:
+      context: ./
+      dockerfile: docker/php/Dockerfile
+    volumes:
+      - ./src:/srv/www
+      - /srv/www/vendor
+      - /srv/www/node_modules
+    environment:
+      REDIS_PORT: 6379
+    networks:
+      - internal
   laravel_test_nginx:
     container_name: laravel_test_nginx
     build: docker/nginx
-    volumes:
-      - ./src:/srv/www
+    volumes_from:
+      - laravel_test_php
     ports:
       - '8888:80'
-    networks:
-      - internal
-  laravel_test_php:
-    container_name: laravel_test_php
-    build: docker/php
-    volumes:
-      - ./src:/srv/www
-    environment:
-      REDIS_PORT: 6379
     networks:
       - internal
   laravel_test_redis:
