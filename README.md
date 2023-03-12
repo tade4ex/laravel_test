@@ -1,11 +1,19 @@
 # Install
 
+### Create .env
+```shell
+cp ./src/.env.example ./src/.env
+```
+
 ### Docker
 ```shell
 docker-compose up -d --no-deps --build
 ```
 ---
 ## Project init
+```shell
+docker exec -i laravel_test_php npm run build
+```
 ```shell
 docker exec -i laravel_test_php php artisan migrate:fresh --seed --seeder=CreateApiUserSeeder
 ```

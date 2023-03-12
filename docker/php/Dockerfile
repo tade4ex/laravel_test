@@ -27,8 +27,6 @@ RUN mkdir -p "/etc/supervisor/logs"
 WORKDIR /srv/www
 
 COPY src .
-RUN composer install && \
-    npm install && \
-    npm run build
+RUN composer install && npm install
 
 CMD ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisor/supervisord.conf"]
